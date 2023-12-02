@@ -1,0 +1,105 @@
+{
+  "end_device_ids": {
+    "device_id": "eui-a8610a303920760b",
+    "application_ids": {
+      "application_id": "blinktower"
+    },
+    "dev_eui": "A8610A303920760B",
+    "join_eui": "ABA1234561234567",
+    "dev_addr": "260B3F8E"
+  },
+  "correlation_ids": [
+    "gs:uplink:01HGN091HNNJRNJ7FG7ZK8G2EQ"
+  ],
+  "received_at": "2023-12-02T10:13:08.998975993Z",
+  "uplink_message": {
+    "session_key_id": "AYwp7fnLh/a/v4ePRcfYaw\u003d\u003d",
+    "f_port": 4,
+    "f_cnt": 8,
+    "frm_payload": "bmV4dA\u003d\u003d",
+    "decoded_payload": {
+      "bytes": [
+        110,
+        101,
+        120,
+        116
+      ]
+    },
+    "rx_metadata": [
+      {
+        "gateway_ids": {
+          "gateway_id": "bfh-burgdorf-jlcoweg",
+          "eui": "00800000A000001F"
+        },
+        "time": "2023-12-02T13:14:19.832510Z",
+        "timestamp": 160427900,
+        "rssi": -107,
+        "channel_rssi": -107,
+        "snr": 7.2,
+        "location": {
+          "latitude": 47.062405,
+          "longitude": 7.6142308,
+          "altitude": 533,
+          "source": "SOURCE_REGISTRY"
+        },
+        "uplink_token": "CiIKIAoUYmZoLWJ1cmdkb3JmLWpsY293ZWcSCACAAACgAAAfEPzev0waDAi0hqyrBhDy86D4AiDg+P3R1eKxAQ\u003d\u003d",
+        "received_at": "2023-12-02T10:13:08.789068274Z"
+      },
+      {
+        "gateway_ids": {
+          "gateway_id": "bfh-burgdorf-pestalozzistrasse",
+          "eui": "008000000000C1D4"
+        },
+        "time": "2023-12-02T10:13:08.759539Z",
+        "timestamp": 2899995060,
+        "rssi": -120,
+        "channel_rssi": -120,
+        "snr": -5.8,
+        "location": {
+          "latitude": 47.05809,
+          "longitude": 7.620362,
+          "altitude": 533,
+          "source": "SOURCE_REGISTRY"
+        },
+        "uplink_token": "CiwKKgoeYmZoLWJ1cmdkb3JmLXBlc3RhbG96emlzdHJhc3NlEggAgAAAAADB1BC00+nmChoMCLSGrKsGEJelgvkCIKDOs6mzr7MB",
+        "received_at": "2023-12-02T10:13:08.790663831Z"
+      }
+    ],
+    "settings": {
+      "data_rate": {
+        "lora": {
+          "bandwidth": 125000,
+          "spreading_factor": 8,
+          "coding_rate": "4/5"
+        }
+      },
+      "frequency": "868100000",
+      "timestamp": 160427900,
+      "time": "2023-12-02T13:14:19.832510Z"
+    },
+    "received_at": "2023-12-02T10:13:08.790066870Z",
+    "confirmed": true,
+    "consumed_airtime": "0.092672s",
+    "locations": {
+      "user": {
+        "latitude": 47.06891827478094,
+        "longitude": 7.62378215789795,
+        "source": "SOURCE_REGISTRY"
+      }
+    },
+    "version_ids": {
+      "brand_id": "arduino",
+      "model_id": "mkr-wan-1310",
+      "hardware_version": "1.0",
+      "firmware_version": "1.2.0",
+      "band_id": "EU_863_870"
+    },
+    "network_ids": {
+      "net_id": "000013",
+      "ns_id": "EC656E0000000181",
+      "tenant_id": "ttn",
+      "cluster_id": "eu1",
+      "cluster_address": "eu1.cloud.thethings.network"
+    }
+  }
+}

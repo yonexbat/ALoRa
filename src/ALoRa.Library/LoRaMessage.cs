@@ -1,40 +1,28 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
-namespace ALoRa.Library
+namespace ALoRa.Library;
+
+public record LoRaMessage
 {
-    public class LoRaMessage
-    {
-        public string app_id { get; set; }
-        public string dev_id { get; set; }
-        public string hardware_serial { get; set; }
-        public string payload_raw { get; set; }
-        public int port { get; set; }
-        public int counter { get; set; }
-        public LoRaMetadata metadata { get; set; }
+    [JsonPropertyName("uplink_message")] public UplinkMessage? UplinkMessage { get; set; }
 
-        public class LoRaMetadata
-        {
-            public DateTime? time { get; set; }
-            public decimal frequency { get; set; }
-            public string modulation { get; set; }
-            public string data_rate { get; set; }
-            public string coding_rate { get; set; }
+    [JsonPropertyName("received_at")] public DateTimeOffset? ReceivedAt { get; set; }
 
-            public LoRaGateway[] gateways { get; set; }
-        }
+    [JsonPropertyName("end_device_ids")] public EndDeviceIds? EndDeviceIds { get; set; }
+}
 
-        public class LoRaGateway
-        {
-            public string gtw_id { get; set; }
-            public Int64 timestamp { get; set; }
-            public DateTime? time { get; set; }
-            public int channel { get; set; }
-            public int rssi { get; set; }
-            public decimal snr { get; set; }
-            public decimal altitude { get; set; }
-            public decimal longitude { get; set; }
-            public decimal latitude { get; set; }
-        }
-    }
+public record UplinkMessage
+{
+    [JsonPropertyName("decoded_payload")] public DecodedPayload? DecodedPayload { get; set; }
+}
 
+public record DecodedPayload
+{
+    [JsonPropertyName("bytes")] public ushort[]? Bytes { get; set; }
+}
+
+public record EndDeviceIds
+{
+    [JsonPropertyName("device_id")] public string? DeviceId { get; set; }
 }

@@ -1,57 +1,53 @@
 ﻿using System;
 
-namespace ALoRa.Library
+namespace ALoRa.Library;
+
+public abstract class BaseObject : IDisposable
 {
-    public abstract class BaseObject : IDisposable
+    private readonly object m_lock = new();
+
+    public bool IsDisposed { get; private set; }
+
+    public bool IsDisposing { get; private set; }
+
+    void IDisposable.Dispose()
     {
-        private object m_lock = new object();
-        public bool IsDisposed { get; private set; }
-        public bool IsDisposing { get; private set; }
-
-        protected abstract void Dispose(bool disposing);
-
-        public void Dispose()
+        lock (m_lock)
         {
-            (this as IDisposable).Dispose();
+            if (IsDisposed || IsDisposing)
+            {
+                return;
+            }
+
+            IsDisposing = true;
         }
 
-        protected void CheckDisposed()
+        try
         {
-            lock (m_lock)
-            {
-                if (IsDisposed || IsDisposing)
-                {
-                    throw new ObjectDisposedException(
-                                    this.GetType().FullName
-                                    );
-                }
-            }
+            Dispose(true);
         }
-
-        void IDisposable.Dispose()
+        catch (Exception ex)
         {
-            lock (m_lock)
-            {
-                if (IsDisposed || IsDisposing)
-                {
-                    return;
-                }
+            Console.WriteLine("Execption while disposing {0} {1}", GetType().FullName, ex);
+        }
+        finally
+        {
+            IsDisposed = true;
+        }
+    }
 
-                IsDisposing = true;
-            }
+    protected abstract void Dispose(bool disposing);
 
-            try
-            {
-                Dispose(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Execption while disposing {0} {1}", GetType().FullName, ex);
-            }
-            finally
-            {
-                IsDisposed = true;
-            }
+    public void Dispose()
+    {
+        (this as IDisposable).Dispose();
+    }
+
+    protected void CheckDisposed()
+    {
+        lock (m_lock)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed || IsDisposing, this);
         }
     }
 }
