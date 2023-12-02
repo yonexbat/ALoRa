@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using ALoRa.Library;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ALoRa.ConsoleApp;
 
@@ -19,8 +20,10 @@ internal static class Program
         var accessKey = config.GetValue<string>("accessKey") ?? throw new ArgumentNullException("accessKey");
         var region = config.GetValue<string>("region") ?? throw new ArgumentNullException("region");
 
+        using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+        ILogger<TtnApplication> logger = factory.CreateLogger<TtnApplication>();
 
-        var app = new TtnApplication(appId, accessKey, region);
+        var app = new TtnApplication(appId, accessKey, region, logger);
         app.MessageReceived += App_MessageReceived;
 
         Console.WriteLine("Press return to exit!");

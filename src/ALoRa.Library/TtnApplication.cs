@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -10,18 +11,20 @@ public class TtnApplication : BaseObject
 
     private readonly MqttClient _client;
     private Action<TtnMessage>? _msgReceived;
+    private readonly ILogger _logger;
 
-    public TtnApplication(string appId, string accessKey, string region)
+    public TtnApplication(string appId, string accessKey, string region, ILogger<TtnApplication> logger)
     {
+        _logger = logger;
         AppId = appId;
         var clientId = Guid.NewGuid().ToString();
 
         var host = string.Format(BrokerUrlFilter, region);
         _client = new MqttClient(host);
-        _client.MqttMsgPublishReceived += M_client_MqttMsgPublishReceived;
-        _client.ConnectionClosed += M_client_ConnectionClosed;
-        _client.MqttMsgSubscribed += M_client_MqttMsgSubscribed;
-        _client.MqttMsgUnsubscribed += M_client_MqttMsgUnsubscribed;
+        _client.MqttMsgPublishReceived += PublishReceived;
+        _client.ConnectionClosed += ConnectionClosed;
+        _client.MqttMsgSubscribed += Subscribed;
+        _client.MqttMsgUnsubscribed += Unsubscribed;
 
         _client.Connect(clientId, AppId, accessKey);
 
@@ -48,9 +51,9 @@ public class TtnApplication : BaseObject
         //m_client.Publish()
     }
 
-    private void M_client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+    private void PublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
-        Console.WriteLine("M_client_MqttMsgPublishReceived");
+        _logger.LogInformation("MqttMsgPublishReceived event. Topic: {Topic}. ", e.Topic);
         try
         {
             var msg = TtnMessage.DeserializeMessage(e.Message, e.Topic);
@@ -60,24 +63,24 @@ public class TtnApplication : BaseObject
                 _msgReceived(msg);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Swallow any exceptions during message receive
+            _logger.LogError(ex, ex.Message);
         }
     }
 
-    private void M_client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
+    private void Unsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
     {
-        Console.WriteLine("M_client_MqttMsgUnsubscribed");
+        _logger.LogInformation("MqttMsgUnsubscribed event");
     }
 
-    private void M_client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
+    private void Subscribed(object sender, MqttMsgSubscribedEventArgs e)
     {
-        Console.WriteLine("M_client_MqttMsgSubscribed");
+        _logger.LogInformation("MqttMsgUnsubscribed event");
     }
 
-    private void M_client_ConnectionClosed(object sender, EventArgs e)
+    private void ConnectionClosed(object sender, EventArgs e)
     {
-        Console.WriteLine("M_client_ConnectionClosed");
+        _logger.LogInformation("ConnectionClosed event");
     }
 }
