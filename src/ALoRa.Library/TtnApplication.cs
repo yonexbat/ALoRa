@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
+using System.Text.Unicode;
 using Microsoft.Extensions.Logging;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
@@ -46,8 +50,27 @@ public class TtnApplication : BaseObject
         _client.Disconnect();
     }
 
-    public void Publish()
+    public void Publish(string device, byte[] payload)
     {
+        DownLinkMessage message = new DownLinkMessage
+        {
+            DownLinks = new List<DownLink>()
+            {
+                new DownLink
+                {
+                    FrmPayload = "vu8=",
+                    Priority = "NORMAL",
+                    FPort = 15,
+                    CorrelationIds = new List<string>(){ Guid.NewGuid().ToString()}
+                }
+            } 
+        };
+        string mesageAsString = JsonSerializer.Serialize(message);
+        byte[] messageAsBytes = Encoding.UTF8.GetBytes(mesageAsString);
+
+
+        _client.Publish($"v3/{AppId}/devices/{device}/down/push", messageAsBytes);
+
         //m_client.Publish()
     }
 
@@ -57,11 +80,7 @@ public class TtnApplication : BaseObject
         try
         {
             var msg = TtnMessage.DeserializeMessage(e.Message, e.Topic);
-
-            if (_msgReceived != null)
-            {
-                _msgReceived(msg);
-            }
+            _msgReceived?.Invoke(msg);
         }
         catch (Exception ex)
         {
@@ -76,7 +95,7 @@ public class TtnApplication : BaseObject
 
     private void Subscribed(object sender, MqttMsgSubscribedEventArgs e)
     {
-        _logger.LogInformation("MqttMsgUnsubscribed event");
+        _logger.LogInformation("MqttMsgSubscribed event");
     }
 
     private void ConnectionClosed(object sender, EventArgs e)

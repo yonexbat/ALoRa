@@ -19,17 +19,19 @@ internal static class Program
         var appId = config.GetValue<string>("appId") ?? throw new ArgumentNullException("appId");
         var accessKey = config.GetValue<string>("accessKey") ?? throw new ArgumentNullException("accessKey");
         var region = config.GetValue<string>("region") ?? throw new ArgumentNullException("region");
+        var deviceId = config.GetValue<string>("deviceId") ?? throw new ArgumentNullException("deviceId");
 
         using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
         ILogger<TtnApplication> logger = factory.CreateLogger<TtnApplication>();
 
-        var app = new TtnApplication(appId, accessKey, region, logger);
+        using var app = new TtnApplication(appId, accessKey, region, logger);
         app.MessageReceived += App_MessageReceived;
 
-        Console.WriteLine("Press return to exit!");
+        Console.WriteLine("Press return for next!");
         Console.ReadLine();
-
-        app.Dispose();
+        app.Publish(deviceId, Array.Empty<byte>());
+        
+        Console.ReadLine();
 
         Console.WriteLine("\nAloha, Goodbye, Vaarwel!");
 
